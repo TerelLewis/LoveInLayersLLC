@@ -1,0 +1,386 @@
+/* CSS Variables for theming */
+:root {
+    --primary-color: #e91e63;
+    --primary-dark: #c2185b;
+    --primary-light: #f8bbd9;
+    --secondary-color: #9c27b0;
+    --background-color: #fef7f9;
+    --card-background: #ffffff;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --border-color: #e0e0e0;
+    --success-color: #4caf50;
+    --warning-color: #ff9800;
+    --error-color: #f44336;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.15);
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+}
+
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header styles */
+header {
+    text-align: center;
+    padding: 30px 0;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+/* Card styles */
+.card {
+    background: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 24px;
+    margin-bottom: 24px;
+    transition: var(--transition);
+}
+
+.card:hover {
+    box-shadow: var(--shadow-hover);
+}
+
+.card h2 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    font-size: 1.4rem;
+    border-bottom: 2px solid var(--primary-light);
+    padding-bottom: 10px;
+}
+
+/* Input styles */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.input-group label {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: var(--transition);
+    width: 100%;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+/* Button styles */
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: var(--border-color);
+    color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+    background: #d0d0d0;
+}
+
+.btn-danger {
+    background: var(--error-color);
+    color: white;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+}
+
+.btn-danger:hover {
+    background: #d32f2f;
+}
+
+/* Serving section */
+.serving-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    align-items: end;
+}
+
+.scale-display {
+    background: var(--primary-light);
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.scale-display span {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.scale-display strong {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+/* Ingredients section */
+.add-ingredient-form {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    gap: 12px;
+    margin-bottom: 20px;
+    align-items: end;
+}
+
+.add-ingredient-form input,
+.add-ingredient-form select {
+    margin-bottom: 0;
+}
+
+.ingredients-table-wrapper {
+    overflow-x: auto;
+}
+
+#ingredientsTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+}
+
+#ingredientsTable th,
+#ingredientsTable td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+#ingredientsTable th {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+#ingredientsTable tbody tr:hover {
+    background: #fef0f5;
+}
+
+#ingredientsTable td:last-child {
+    text-align: center;
+}
+
+.empty-state {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 40px 20px;
+    font-style: italic;
+}
+
+/* Pricing section */
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.cost-summary,
+.pricing-calculator {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.cost-summary h3,
+.pricing-calculator h3 {
+    color: var(--secondary-color);
+    margin-bottom: 16px;
+    font-size: 1.1rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.summary-row:last-child {
+    border-bottom: none;
+}
+
+.final-pricing {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.pricing-result {
+    background: #f0f0f0;
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.pricing-result span {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.pricing-result strong {
+    font-size: 1.4rem;
+    color: var(--text-primary);
+}
+
+.pricing-result.highlight {
+    background: var(--primary-color);
+}
+
+.pricing-result.highlight span,
+.pricing-result.highlight strong {
+    color: white;
+}
+
+.pricing-result.profit {
+    background: var(--success-color);
+}
+
+.pricing-result.profit span,
+.pricing-result.profit strong {
+    color: white;
+}
+
+/* Actions section */
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Footer styles */
+footer {
+    text-align: center;
+    padding: 30px 0;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border-color);
+    margin-top: 20px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1.8rem;
+    }
+
+    .add-ingredient-form {
+        grid-template-columns: 1fr;
+    }
+
+    .serving-controls {
+        grid-template-columns: 1fr;
+    }
+
+    .final-pricing {
+        grid-template-columns: 1fr;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .action-buttons .btn {
+        width: 100%;
+    }
+}
+
+/* Animation for added ingredients */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#ingredientsTable tbody tr {
+    animation: fadeIn 0.3s ease;
+}
+
+/* Editable cell styles */
+.editable-input {
+    width: 80px;
+    padding: 6px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.editable-input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
