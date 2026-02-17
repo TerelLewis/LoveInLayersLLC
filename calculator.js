@@ -226,14 +226,14 @@ function handleClearAll() {
  */
 function handleLoadSample() {
     const sampleIngredients = [
-        { id: Date.now(), name: 'All-Purpose Flour', amount: 2.5, unit: 'cups', packageSize: 5, packageUnit: 'lb', packageCost: 4.99 },
-        { id: Date.now() + 1, name: 'Granulated Sugar', amount: 1.5, unit: 'cups', packageSize: 4, packageUnit: 'lb', packageCost: 3.49 },
-        { id: Date.now() + 2, name: 'Butter (unsalted)', amount: 1, unit: 'cups', packageSize: 1, packageUnit: 'lb', packageCost: 5.99 },
+        { id: Date.now(), name: 'All-Purpose Flour', amount: 2.5, unit: 'cups', packageSize: 20, packageUnit: 'cups', packageCost: 4.99 },
+        { id: Date.now() + 1, name: 'Granulated Sugar', amount: 1.5, unit: 'cups', packageSize: 10, packageUnit: 'cups', packageCost: 3.49 },
+        { id: Date.now() + 2, name: 'Butter (unsalted)', amount: 1, unit: 'cups', packageSize: 2, packageUnit: 'cups', packageCost: 5.99 },
         { id: Date.now() + 3, name: 'Eggs', amount: 3, unit: 'each', packageSize: 12, packageUnit: 'each', packageCost: 4.29 },
-        { id: Date.now() + 4, name: 'Vanilla Extract', amount: 2, unit: 'tsp', packageSize: 4, packageUnit: 'oz', packageCost: 8.99 },
-        { id: Date.now() + 5, name: 'Baking Powder', amount: 2, unit: 'tsp', packageSize: 10, packageUnit: 'oz', packageCost: 3.49 },
-        { id: Date.now() + 6, name: 'Milk', amount: 1, unit: 'cups', packageSize: 1, packageUnit: 'L', packageCost: 2.49 },
-        { id: Date.now() + 7, name: 'Salt', amount: 0.5, unit: 'tsp', packageSize: 26, packageUnit: 'oz', packageCost: 1.29 }
+        { id: Date.now() + 4, name: 'Vanilla Extract', amount: 2, unit: 'tsp', packageSize: 24, packageUnit: 'tsp', packageCost: 8.99 },
+        { id: Date.now() + 5, name: 'Baking Powder', amount: 2, unit: 'tsp', packageSize: 60, packageUnit: 'tsp', packageCost: 3.49 },
+        { id: Date.now() + 6, name: 'Milk', amount: 1, unit: 'cups', packageSize: 4, packageUnit: 'cups', packageCost: 2.49 },
+        { id: Date.now() + 7, name: 'Salt', amount: 0.5, unit: 'tsp', packageSize: 156, packageUnit: 'tsp', packageCost: 1.29 }
     ];
 
     state.ingredients = sampleIngredients;

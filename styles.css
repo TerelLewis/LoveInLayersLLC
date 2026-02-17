@@ -79,6 +79,13 @@ header h1 {
     padding-bottom: 10px;
 }
 
+.section-hint {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-style: italic;
+    margin-bottom: 16px;
+}
+
 /* Input styles */
 .input-group {
     display: flex;
