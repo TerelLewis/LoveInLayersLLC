@@ -8,7 +8,8 @@ const state = {
     ingredients: [],
     baseServings: 12,
     targetServings: 12,
-    laborCost: 0,
+    hoursWorked: 0,
+    hourlyRate: 15,
     overheadCost: 0,
     profitMargin: 30
 };
@@ -19,22 +20,30 @@ const elements = {
     targetServings: document.getElementById('targetServings'),
     scaleFactor: document.getElementById('scaleFactor'),
     ingredientName: document.getElementById('ingredientName'),
-    ingredientQuantity: document.getElementById('ingredientQuantity'),
+    ingredientAmount: document.getElementById('ingredientAmount'),
     ingredientUnit: document.getElementById('ingredientUnit'),
-    ingredientCost: document.getElementById('ingredientCost'),
+    packageSize: document.getElementById('packageSize'),
+    packageUnit: document.getElementById('packageUnit'),
+    packageCost: document.getElementById('packageCost'),
     addIngredientBtn: document.getElementById('addIngredientBtn'),
     ingredientsList: document.getElementById('ingredientsList'),
     emptyState: document.getElementById('emptyState'),
     ingredientsTable: document.getElementById('ingredientsTable'),
     totalIngredientCost: document.getElementById('totalIngredientCost'),
     costPerServing: document.getElementById('costPerServing'),
-    laborCost: document.getElementById('laborCost'),
+    hoursWorked: document.getElementById('hoursWorked'),
+    hourlyRate: document.getElementById('hourlyRate'),
+    totalLaborCost: document.getElementById('totalLaborCost'),
     overheadCost: document.getElementById('overheadCost'),
-    profitMargin: document.getElementById('profitMargin'),
+    laborCostDisplay: document.getElementById('laborCostDisplay'),
+    overheadCostDisplay: document.getElementById('overheadCostDisplay'),
     totalProductionCost: document.getElementById('totalProductionCost'),
+    profitMargin: document.getElementById('profitMargin'),
+    marginPercent: document.getElementById('marginPercent'),
+    totalCostDisplay: document.getElementById('totalCostDisplay'),
+    costPerServingDisplay: document.getElementById('costPerServingDisplay'),
     sellingPrice: document.getElementById('sellingPrice'),
-    pricePerServing: document.getElementById('pricePerServing'),
-    expectedProfit: document.getElementById('expectedProfit'),
+    profitPerServing: document.getElementById('profitPerServing'),
     clearAllBtn: document.getElementById('clearAllBtn'),
     loadSampleBtn: document.getElementById('loadSampleBtn'),
     exportBtn: document.getElementById('exportBtn')
@@ -63,8 +72,9 @@ function attachEventListeners() {
     // Allow Enter key to add ingredient
     const ingredientInputs = [
         elements.ingredientName,
-        elements.ingredientQuantity,
-        elements.ingredientCost
+        elements.ingredientAmount,
+        elements.packageSize,
+        elements.packageCost
     ];
     ingredientInputs.forEach(input => {
         input.addEventListener('keypress', (e) => {
@@ -74,8 +84,9 @@ function attachEventListeners() {
         });
     });
 
-    // Pricing inputs
-    elements.laborCost.addEventListener('input', handlePricingChange);
+    // Labor inputs
+    elements.hoursWorked.addEventListener('input', handleLaborChange);
+    elements.hourlyRate.addEventListener('input', handleLaborChange);
     elements.overheadCost.addEventListener('input', handlePricingChange);
     elements.profitMargin.addEventListener('input', handlePricingChange);
 
@@ -100,9 +111,11 @@ function handleServingsChange() {
  */
 function handleAddIngredient() {
     const name = elements.ingredientName.value.trim();
-    const quantity = parseFloat(elements.ingredientQuantity.value);
+    const amount = parseFloat(elements.ingredientAmount.value);
     const unit = elements.ingredientUnit.value;
-    const costPerUnit = parseFloat(elements.ingredientCost.value) || 0;
+    const packageSize = parseFloat(elements.packageSize.value);
+    const packageUnit = elements.packageUnit.value;
+    const packageCost = parseFloat(elements.packageCost.value) || 0;
 
     if (!name) {
         alert('Please enter an ingredient name.');
@@ -110,18 +123,26 @@ function handleAddIngredient() {
         return;
     }
 
-    if (isNaN(quantity) || quantity <= 0) {
-        alert('Please enter a valid quantity.');
-        elements.ingredientQuantity.focus();
+    if (isNaN(amount) || amount <= 0) {
+        alert('Please enter a valid amount.');
+        elements.ingredientAmount.focus();
+        return;
+    }
+
+    if (isNaN(packageSize) || packageSize <= 0) {
+        alert('Please enter a valid package size.');
+        elements.packageSize.focus();
         return;
     }
 
     const ingredient = {
         id: Date.now(),
         name,
-        quantity,
+        amount,
         unit,
-        costPerUnit
+        packageSize,
+        packageUnit,
+        packageCost
     };
 
     state.ingredients.push(ingredient);
@@ -136,8 +157,9 @@ function handleAddIngredient() {
  */
 function clearIngredientInputs() {
     elements.ingredientName.value = '';
-    elements.ingredientQuantity.value = '';
-    elements.ingredientCost.value = '';
+    elements.ingredientAmount.value = '';
+    elements.packageSize.value = '';
+    elements.packageCost.value = '';
 }
 
 /**
@@ -146,7 +168,7 @@ function clearIngredientInputs() {
 function handleEditIngredient(id, field, value) {
     const ingredient = state.ingredients.find(ing => ing.id === id);
     if (ingredient) {
-        if (field === 'quantity' || field === 'costPerUnit') {
+        if (field === 'amount' || field === 'packageSize' || field === 'packageCost') {
             ingredient[field] = parseFloat(value) || 0;
         } else {
             ingredient[field] = value;
@@ -166,10 +188,19 @@ function handleRemoveIngredient(id) {
 }
 
 /**
+ * Handle labor input changes
+ */
+function handleLaborChange() {
+    state.hoursWorked = parseFloat(elements.hoursWorked.value) || 0;
+    state.hourlyRate = parseFloat(elements.hourlyRate.value) || 0;
+    updateUI();
+    saveToLocalStorage();
+}
+
+/**
  * Handle pricing input changes
  */
 function handlePricingChange() {
-    state.laborCost = parseFloat(elements.laborCost.value) || 0;
     state.overheadCost = parseFloat(elements.overheadCost.value) || 0;
     state.profitMargin = parseFloat(elements.profitMargin.value) || 0;
     updateUI();
@@ -195,26 +226,28 @@ function handleClearAll() {
  */
 function handleLoadSample() {
     const sampleIngredients = [
-        { id: Date.now(), name: 'All-Purpose Flour', quantity: 2.5, unit: 'cups', costPerUnit: 0.50 },
-        { id: Date.now() + 1, name: 'Granulated Sugar', quantity: 1.5, unit: 'cups', costPerUnit: 0.75 },
-        { id: Date.now() + 2, name: 'Butter (unsalted)', quantity: 1, unit: 'cups', costPerUnit: 4.00 },
-        { id: Date.now() + 3, name: 'Eggs', quantity: 3, unit: 'each', costPerUnit: 0.35 },
-        { id: Date.now() + 4, name: 'Vanilla Extract', quantity: 2, unit: 'tsp', costPerUnit: 0.75 },
-        { id: Date.now() + 5, name: 'Baking Powder', quantity: 2, unit: 'tsp', costPerUnit: 0.15 },
-        { id: Date.now() + 6, name: 'Milk', quantity: 1, unit: 'cups', costPerUnit: 0.50 },
-        { id: Date.now() + 7, name: 'Salt', quantity: 0.5, unit: 'tsp', costPerUnit: 0.05 }
+        { id: Date.now(), name: 'All-Purpose Flour', amount: 2.5, unit: 'cups', packageSize: 20, packageUnit: 'cups', packageCost: 4.99 },
+        { id: Date.now() + 1, name: 'Granulated Sugar', amount: 1.5, unit: 'cups', packageSize: 10, packageUnit: 'cups', packageCost: 3.49 },
+        { id: Date.now() + 2, name: 'Butter (unsalted)', amount: 1, unit: 'cups', packageSize: 2, packageUnit: 'cups', packageCost: 5.99 },
+        { id: Date.now() + 3, name: 'Eggs', amount: 3, unit: 'each', packageSize: 12, packageUnit: 'each', packageCost: 4.29 },
+        { id: Date.now() + 4, name: 'Vanilla Extract', amount: 2, unit: 'tsp', packageSize: 24, packageUnit: 'tsp', packageCost: 8.99 },
+        { id: Date.now() + 5, name: 'Baking Powder', amount: 2, unit: 'tsp', packageSize: 60, packageUnit: 'tsp', packageCost: 3.49 },
+        { id: Date.now() + 6, name: 'Milk', amount: 1, unit: 'cups', packageSize: 4, packageUnit: 'cups', packageCost: 2.49 },
+        { id: Date.now() + 7, name: 'Salt', amount: 0.5, unit: 'tsp', packageSize: 156, packageUnit: 'tsp', packageCost: 1.29 }
     ];
 
     state.ingredients = sampleIngredients;
     state.baseServings = 12;
     state.targetServings = 12;
-    state.laborCost = 15;
+    state.hoursWorked = 1;
+    state.hourlyRate = 15;
     state.overheadCost = 5;
     state.profitMargin = 35;
 
     elements.baseServings.value = state.baseServings;
     elements.targetServings.value = state.targetServings;
-    elements.laborCost.value = state.laborCost;
+    elements.hoursWorked.value = state.hoursWorked;
+    elements.hourlyRate.value = state.hourlyRate;
     elements.overheadCost.value = state.overheadCost;
     elements.profitMargin.value = state.profitMargin;
 
@@ -238,25 +271,33 @@ function handleExport() {
     exportText += `INGREDIENTS (Scaled)\n`;
     exportText += `${'-'.repeat(40)}\n`;
     state.ingredients.forEach(ing => {
-        const scaledQty = (ing.quantity * scaleFactor).toFixed(2);
-        const totalCost = (ing.quantity * scaleFactor * ing.costPerUnit).toFixed(2);
-        exportText += `${ing.name}: ${scaledQty} ${ing.unit} - $${totalCost}\n`;
+        const scaledQty = (ing.amount * scaleFactor).toFixed(2);
+        const costPerUnit = ing.packageSize > 0 ? ing.packageCost / ing.packageSize : 0;
+        const totalCost = (ing.amount * scaleFactor * costPerUnit).toFixed(2);
+        exportText += `${ing.name}: ${scaledQty} ${ing.unit} (Pkg: ${ing.packageSize} ${ing.packageUnit} @ $${ing.packageCost.toFixed(2)}) - $${totalCost}\n`;
     });
+
+    exportText += `\nLABOR\n`;
+    exportText += `${'-'.repeat(40)}\n`;
+    exportText += `Hours Worked: ${state.hoursWorked}\n`;
+    exportText += `Hourly Rate: $${state.hourlyRate.toFixed(2)}\n`;
+    exportText += `Total Labor Cost: $${calculations.laborCost.toFixed(2)}\n`;
 
     exportText += `\nCOST SUMMARY\n`;
     exportText += `${'-'.repeat(40)}\n`;
     exportText += `Total Ingredient Cost: $${calculations.totalIngredientCost.toFixed(2)}\n`;
-    exportText += `Labor Cost: $${state.laborCost.toFixed(2)}\n`;
-    exportText += `Overhead Cost: $${state.overheadCost.toFixed(2)}\n`;
+    exportText += `Labor Cost: $${calculations.laborCost.toFixed(2)}\n`;
+    exportText += `Overhead/Packaging Cost: $${state.overheadCost.toFixed(2)}\n`;
     exportText += `Total Production Cost: $${calculations.totalProductionCost.toFixed(2)}\n`;
     exportText += `Cost per Serving: $${calculations.costPerServing.toFixed(2)}\n\n`;
 
-    exportText += `PRICING\n`;
+    exportText += `PROFIT MARGINS\n`;
     exportText += `${'-'.repeat(40)}\n`;
     exportText += `Profit Margin: ${state.profitMargin}%\n`;
-    exportText += `Suggested Selling Price: $${calculations.sellingPrice.toFixed(2)}\n`;
-    exportText += `Price per Serving: $${calculations.pricePerServing.toFixed(2)}\n`;
-    exportText += `Expected Profit: $${calculations.expectedProfit.toFixed(2)}\n`;
+    exportText += `Total Cost: $${calculations.totalProductionCost.toFixed(2)}\n`;
+    exportText += `Cost per Serving: $${calculations.costPerServing.toFixed(2)}\n`;
+    exportText += `Sell At (${state.profitMargin}% margin): $${calculations.sellingPrice.toFixed(2)}\n`;
+    exportText += `Profit per Serving: $${calculations.profitPerServing.toFixed(2)}\n`;
 
     // Create download
     const blob = new Blob([exportText], { type: 'text/plain' });
@@ -283,13 +324,17 @@ function getScaleFactor() {
 function calculatePricing() {
     const scaleFactor = getScaleFactor();
 
-    // Calculate total ingredient cost
+    // Calculate total ingredient cost based on package pricing
     const totalIngredientCost = state.ingredients.reduce((sum, ing) => {
-        return sum + (ing.quantity * scaleFactor * ing.costPerUnit);
+        const costPerUnit = ing.packageSize > 0 ? ing.packageCost / ing.packageSize : 0;
+        return sum + (ing.amount * scaleFactor * costPerUnit);
     }, 0);
 
+    // Calculate labor cost
+    const laborCost = state.hoursWorked * state.hourlyRate;
+
     // Calculate total production cost
-    const totalProductionCost = totalIngredientCost + state.laborCost + state.overheadCost;
+    const totalProductionCost = totalIngredientCost + laborCost + state.overheadCost;
 
     // Calculate cost per serving
     const costPerServing = state.targetServings > 0 ? totalProductionCost / state.targetServings : 0;
@@ -300,15 +345,20 @@ function calculatePricing() {
     // Calculate price per serving
     const pricePerServing = state.targetServings > 0 ? sellingPrice / state.targetServings : 0;
 
-    // Calculate expected profit
+    // Calculate profit per serving
+    const profitPerServing = pricePerServing - costPerServing;
+
+    // Calculate expected total profit
     const expectedProfit = sellingPrice - totalProductionCost;
 
     return {
         totalIngredientCost,
+        laborCost,
         totalProductionCost,
         costPerServing,
         sellingPrice,
         pricePerServing,
+        profitPerServing,
         expectedProfit
     };
 }
@@ -346,8 +396,9 @@ function updateIngredientsTable() {
     elements.ingredientsTable.style.display = 'table';
 
     elements.ingredientsList.innerHTML = state.ingredients.map(ing => {
-        const scaledQty = (ing.quantity * scaleFactor).toFixed(2);
-        const totalCost = (ing.quantity * scaleFactor * ing.costPerUnit).toFixed(2);
+        const scaledQty = (ing.amount * scaleFactor).toFixed(2);
+        const costPerUnit = ing.packageSize > 0 ? ing.packageCost / ing.packageSize : 0;
+        const totalCost = (ing.amount * scaleFactor * costPerUnit).toFixed(2);
 
         return `
             <tr data-id="${ing.id}">
@@ -355,23 +406,33 @@ function updateIngredientsTable() {
                 <td>
                     <input type="number" 
                            class="editable-input" 
-                           value="${ing.quantity}" 
+                           value="${ing.amount}" 
                            min="0" 
                            step="0.01"
-                           onchange="handleEditIngredient(${ing.id}, 'quantity', this.value)"
-                           aria-label="Base quantity for ${escapeHtml(ing.name)}">
+                           onchange="handleEditIngredient(${ing.id}, 'amount', this.value)"
+                           aria-label="Amount for ${escapeHtml(ing.name)}">
                 </td>
                 <td>${escapeHtml(ing.unit)}</td>
-                <td><strong>${scaledQty}</strong></td>
                 <td>
                     <input type="number" 
                            class="editable-input" 
-                           value="${ing.costPerUnit.toFixed(2)}" 
+                           value="${ing.packageSize}" 
                            min="0" 
                            step="0.01"
-                           onchange="handleEditIngredient(${ing.id}, 'costPerUnit', this.value)"
-                           aria-label="Cost per unit for ${escapeHtml(ing.name)}">
+                           onchange="handleEditIngredient(${ing.id}, 'packageSize', this.value)"
+                           aria-label="Package size for ${escapeHtml(ing.name)}">
                 </td>
+                <td>${escapeHtml(ing.packageUnit)}</td>
+                <td>
+                    <input type="number" 
+                           class="editable-input" 
+                           value="${ing.packageCost.toFixed(2)}" 
+                           min="0" 
+                           step="0.01"
+                           onchange="handleEditIngredient(${ing.id}, 'packageCost', this.value)"
+                           aria-label="Package cost for ${escapeHtml(ing.name)}">
+                </td>
+                <td><strong>${scaledQty}</strong></td>
                 <td>$${totalCost}</td>
                 <td>
                     <button class="btn btn-danger" onclick="handleRemoveIngredient(${ing.id})" aria-label="Remove ${escapeHtml(ing.name)}">
@@ -389,12 +450,22 @@ function updateIngredientsTable() {
 function updatePricingDisplay() {
     const calculations = calculatePricing();
 
+    // Update labor display
+    elements.totalLaborCost.textContent = `$${calculations.laborCost.toFixed(2)}`;
+
+    // Update cost summary section
     elements.totalIngredientCost.textContent = `$${calculations.totalIngredientCost.toFixed(2)}`;
-    elements.costPerServing.textContent = `$${calculations.costPerServing.toFixed(2)}`;
+    elements.laborCostDisplay.textContent = `$${calculations.laborCost.toFixed(2)}`;
+    elements.overheadCostDisplay.textContent = `$${state.overheadCost.toFixed(2)}`;
     elements.totalProductionCost.textContent = `$${calculations.totalProductionCost.toFixed(2)}`;
+    elements.costPerServing.textContent = `$${calculations.costPerServing.toFixed(2)}`;
+
+    // Update profit margins section
+    elements.marginPercent.textContent = state.profitMargin;
+    elements.totalCostDisplay.textContent = `$${calculations.totalProductionCost.toFixed(2)}`;
+    elements.costPerServingDisplay.textContent = `$${calculations.costPerServing.toFixed(2)}`;
     elements.sellingPrice.textContent = `$${calculations.sellingPrice.toFixed(2)}`;
-    elements.pricePerServing.textContent = `$${calculations.pricePerServing.toFixed(2)}`;
-    elements.expectedProfit.textContent = `$${calculations.expectedProfit.toFixed(2)}`;
+    elements.profitPerServing.textContent = `$${calculations.profitPerServing.toFixed(2)}`;
 }
 
 /**
@@ -430,7 +501,8 @@ function loadFromLocalStorage() {
             // Update input values from loaded state
             elements.baseServings.value = state.baseServings;
             elements.targetServings.value = state.targetServings;
-            elements.laborCost.value = state.laborCost;
+            elements.hoursWorked.value = state.hoursWorked;
+            elements.hourlyRate.value = state.hourlyRate;
             elements.overheadCost.value = state.overheadCost;
             elements.profitMargin.value = state.profitMargin;
         }

@@ -79,6 +79,13 @@ header h1 {
     padding-bottom: 10px;
 }
 
+.section-hint {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-style: italic;
+    margin-bottom: 16px;
+}
+
 /* Input styles */
 .input-group {
     display: flex;
@@ -186,11 +193,22 @@ select:focus {
 
 /* Ingredients section */
 .add-ingredient-form {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    display: flex;
+    flex-direction: column;
     gap: 12px;
     margin-bottom: 20px;
+}
+
+.ingredient-row-top,
+.ingredient-row-bottom {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 12px;
     align-items: end;
+}
+
+.ingredient-row-bottom {
+    grid-template-columns: 1fr 1fr 1fr auto;
 }
 
 .add-ingredient-form input,
@@ -269,6 +287,108 @@ select:focus {
     border-bottom: none;
 }
 
+/* Labor section */
+.labor-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.labor-calculator {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.labor-inputs {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.labor-operator {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.labor-result {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.labor-result label {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.labor-result strong {
+    font-size: 1.4rem;
+    color: var(--success-color);
+}
+
+.overhead-section {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.input-hint {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    margin-top: 4px;
+}
+
+/* Cost Summary Section */
+.cost-summary-section .cost-summary-grid {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.cost-summary-section .summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.cost-summary-section .summary-row:last-child {
+    border-bottom: none;
+}
+
+.cost-summary-section .total-row {
+    background: var(--primary-light);
+    margin: 8px -20px;
+    padding: 12px 20px;
+    border-radius: 4px;
+    font-size: 1.1rem;
+}
+
+/* Profit section */
+.profit-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.profit-input {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.profit-results {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+}
+
 .final-pricing {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -334,11 +454,33 @@ footer {
         font-size: 1.8rem;
     }
 
-    .add-ingredient-form {
+    .ingredient-row-top,
+    .ingredient-row-bottom {
         grid-template-columns: 1fr;
     }
 
     .serving-controls {
+        grid-template-columns: 1fr;
+    }
+
+    .labor-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .labor-inputs {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .labor-operator {
+        text-align: center;
+    }
+
+    .profit-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profit-results {
         grid-template-columns: 1fr;
     }
 

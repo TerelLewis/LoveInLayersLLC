@@ -36,23 +36,41 @@
             <!-- Ingredients Section -->
             <section class="card ingredients-section">
                 <h2>🥄 Ingredients</h2>
+                <p class="section-hint">For accurate cost calculation, use matching units for amount and package size (e.g., both in cups or both in oz).</p>
                 <div class="add-ingredient-form">
-                    <input type="text" id="ingredientName" placeholder="Ingredient name" aria-label="Ingredient name">
-                    <input type="number" id="ingredientQuantity" placeholder="Quantity" min="0" step="0.01" aria-label="Quantity">
-                    <select id="ingredientUnit" aria-label="Unit">
-                        <option value="cups">cups</option>
-                        <option value="tbsp">tbsp</option>
-                        <option value="tsp">tsp</option>
-                        <option value="oz">oz</option>
-                        <option value="lb">lb</option>
-                        <option value="g">g</option>
-                        <option value="kg">kg</option>
-                        <option value="ml">ml</option>
-                        <option value="L">L</option>
-                        <option value="each">each</option>
-                    </select>
-                    <input type="number" id="ingredientCost" placeholder="Cost per unit ($)" min="0" step="0.01" aria-label="Cost per unit">
-                    <button type="button" id="addIngredientBtn" class="btn btn-primary">Add Ingredient</button>
+                    <div class="ingredient-row-top">
+                        <input type="text" id="ingredientName" placeholder="Ingredient name" aria-label="Ingredient name">
+                        <input type="number" id="ingredientAmount" placeholder="Amount" min="0" step="0.01" aria-label="Amount needed">
+                        <select id="ingredientUnit" aria-label="Unit">
+                            <option value="cups">cups</option>
+                            <option value="tbsp">tbsp</option>
+                            <option value="tsp">tsp</option>
+                            <option value="oz">oz</option>
+                            <option value="lb">lb</option>
+                            <option value="g">g</option>
+                            <option value="kg">kg</option>
+                            <option value="ml">ml</option>
+                            <option value="L">L</option>
+                            <option value="each">each</option>
+                        </select>
+                    </div>
+                    <div class="ingredient-row-bottom">
+                        <input type="number" id="packageSize" placeholder="Package size" min="0" step="0.01" aria-label="Package size">
+                        <select id="packageUnit" aria-label="Package unit">
+                            <option value="cups">cups</option>
+                            <option value="tbsp">tbsp</option>
+                            <option value="tsp">tsp</option>
+                            <option value="oz">oz</option>
+                            <option value="lb">lb</option>
+                            <option value="g">g</option>
+                            <option value="kg">kg</option>
+                            <option value="ml">ml</option>
+                            <option value="L">L</option>
+                            <option value="each">each</option>
+                        </select>
+                        <input type="number" id="packageCost" placeholder="Package cost ($)" min="0" step="0.01" aria-label="Package cost">
+                        <button type="button" id="addIngredientBtn" class="btn btn-primary">Add Ingredient</button>
+                    </div>
                 </div>
 
                 <div class="ingredients-table-wrapper">
@@ -60,10 +78,12 @@
                         <thead>
                             <tr>
                                 <th>Ingredient</th>
-                                <th>Base Qty</th>
+                                <th>Amount</th>
                                 <th>Unit</th>
+                                <th>Pkg Size</th>
+                                <th>Pkg Unit</th>
+                                <th>Pkg Cost</th>
                                 <th>Scaled Qty</th>
-                                <th>Cost/Unit</th>
                                 <th>Total Cost</th>
                                 <th>Actions</th>
                             </tr>
@@ -77,55 +97,92 @@
                 <p class="empty-state" id="emptyState">No ingredients added yet. Add your first ingredient above!</p>
             </section>
 
-            <!-- Cost & Pricing Section -->
-            <section class="card pricing-section">
-                <h2>💰 Cost & Pricing</h2>
-                <div class="pricing-grid">
-                    <div class="cost-summary">
-                        <h3>Cost Summary</h3>
-                        <div class="summary-row">
-                            <span>Total Ingredient Cost:</span>
-                            <strong id="totalIngredientCost">$0.00</strong>
-                        </div>
-                        <div class="summary-row">
-                            <span>Cost per Serving:</span>
-                            <strong id="costPerServing">$0.00</strong>
+            <!-- Labor Cost Section -->
+            <section class="card labor-section">
+                <h2>⏱️ Labor Cost</h2>
+                <div class="labor-grid">
+                    <div class="labor-calculator">
+                        <div class="labor-inputs">
+                            <div class="input-group">
+                                <label for="hoursWorked">Hours Worked:</label>
+                                <input type="number" id="hoursWorked" min="0" step="0.25" value="0" aria-label="Hours worked">
+                            </div>
+                            <span class="labor-operator">×</span>
+                            <div class="input-group">
+                                <label for="hourlyRate">$ per Hour:</label>
+                                <input type="number" id="hourlyRate" min="0" step="0.01" value="15" aria-label="Hourly rate">
+                            </div>
+                            <span class="labor-operator">=</span>
+                            <div class="labor-result">
+                                <label>Total Labor:</label>
+                                <strong id="totalLaborCost">$0.00</strong>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="pricing-calculator">
-                        <h3>Pricing Calculator</h3>
+                    <div class="overhead-section">
                         <div class="input-group">
-                            <label for="laborCost">Labor Cost ($):</label>
-                            <input type="number" id="laborCost" min="0" step="0.01" value="0" aria-label="Labor cost">
-                        </div>
-                        <div class="input-group">
-                            <label for="overheadCost">Overhead/Other Costs ($):</label>
+                            <label for="overheadCost">Overhead/Packaging Costs ($):</label>
                             <input type="number" id="overheadCost" min="0" step="0.01" value="0" aria-label="Overhead cost">
-                        </div>
-                        <div class="input-group">
-                            <label for="profitMargin">Profit Margin (%):</label>
-                            <input type="number" id="profitMargin" min="0" max="500" step="1" value="30" aria-label="Profit margin">
+                            <small class="input-hint">Include boxes, bags, electricity, etc.</small>
                         </div>
                     </div>
                 </div>
+            </section>
 
-                <div class="final-pricing">
-                    <div class="pricing-result">
+            <!-- Cost Summary Section -->
+            <section class="card cost-summary-section">
+                <h2>📊 Cost Summary</h2>
+                <div class="cost-summary-grid">
+                    <div class="summary-row">
+                        <span>Total Ingredient Cost:</span>
+                        <strong id="totalIngredientCost">$0.00</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Labor Cost:</span>
+                        <strong id="laborCostDisplay">$0.00</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Overhead/Packaging:</span>
+                        <strong id="overheadCostDisplay">$0.00</strong>
+                    </div>
+                    <div class="summary-row total-row">
                         <span>Total Production Cost:</span>
                         <strong id="totalProductionCost">$0.00</strong>
                     </div>
-                    <div class="pricing-result highlight">
-                        <span>Suggested Selling Price:</span>
-                        <strong id="sellingPrice">$0.00</strong>
+                    <div class="summary-row">
+                        <span>Cost per Serving:</span>
+                        <strong id="costPerServing">$0.00</strong>
                     </div>
-                    <div class="pricing-result">
-                        <span>Price per Serving:</span>
-                        <strong id="pricePerServing">$0.00</strong>
+                </div>
+            </section>
+
+            <!-- Profit Margins Section -->
+            <section class="card profit-section">
+                <h2>💰 Profit Margins</h2>
+                <div class="profit-grid">
+                    <div class="profit-input">
+                        <div class="input-group">
+                            <label for="profitMargin">Desired Profit Margin (%):</label>
+                            <input type="number" id="profitMargin" min="0" max="500" step="1" value="30" aria-label="Profit margin">
+                        </div>
                     </div>
-                    <div class="pricing-result profit">
-                        <span>Expected Profit:</span>
-                        <strong id="expectedProfit">$0.00</strong>
+                    <div class="profit-results">
+                        <div class="pricing-result">
+                            <span>Total Cost:</span>
+                            <strong id="totalCostDisplay">$0.00</strong>
+                        </div>
+                        <div class="pricing-result">
+                            <span>Cost per Serving:</span>
+                            <strong id="costPerServingDisplay">$0.00</strong>
+                        </div>
+                        <div class="pricing-result highlight">
+                            <span>Sell At (<span id="marginPercent">30</span>% margin):</span>
+                            <strong id="sellingPrice">$0.00</strong>
+                        </div>
+                        <div class="pricing-result profit">
+                            <span>Profit per Serving:</span>
+                            <strong id="profitPerServing">$0.00</strong>
+                        </div>
                     </div>
                 </div>
             </section>
