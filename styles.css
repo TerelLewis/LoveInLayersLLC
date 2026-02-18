@@ -209,7 +209,7 @@ select:focus {
 .add-ingredient-form {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 20px;
     margin-bottom: 20px;
 }
 
@@ -217,7 +217,7 @@ select:focus {
 .ingredient-row-bottom {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
-    gap: 12px;
+    gap: 16px;
     align-items: end;
 }
 
