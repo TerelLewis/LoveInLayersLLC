@@ -6,6 +6,10 @@
 // Ingredient ID counter for unique IDs
 let ingredientIdCounter = 1;
 
+// Profit margin validation thresholds
+const MIN_RECOMMENDED_MARGIN = 10;
+const MAX_RECOMMENDED_MARGIN = 200;
+
 // State management
 const state = {
     ingredients: [],
@@ -245,9 +249,9 @@ function handlePricingChange() {
     // Validate profit margin
     if (state.profitMargin < 0) {
         showNotification('Warning: Negative profit margin detected. You will lose money on each sale.', 'warning');
-    } else if (state.profitMargin < 10) {
+    } else if (state.profitMargin < MIN_RECOMMENDED_MARGIN) {
         showNotification('Warning: Very low profit margin. Consider increasing to ensure sustainability.', 'warning');
-    } else if (state.profitMargin > 200) {
+    } else if (state.profitMargin > MAX_RECOMMENDED_MARGIN) {
         showNotification('Warning: Very high profit margin. This may make your products difficult to sell.', 'warning');
     }
     
@@ -552,7 +556,10 @@ function showNotification(message, type = 'warning') {
     setTimeout(() => {
         notification.classList.add('hiding');
         setTimeout(() => {
-            document.body.removeChild(notification);
+            // Verify notification is still in the DOM before removing
+            if (notification.parentNode === document.body) {
+                document.body.removeChild(notification);
+            }
         }, 300);
     }, 5000);
 }
