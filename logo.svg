@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100" width="300" height="100">
+  <!-- Background circle for design -->
+  <defs>
+    <linearGradient id="cakeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f2d16d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ac1a03;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Stylized layered cake icon -->
+  <!-- Bottom layer -->
+  <ellipse cx="80" cy="75" rx="40" ry="8" fill="#6e4315"/>
+  <rect x="40" y="67" width="80" height="8" fill="#8b5a2b"/>
+  
+  <!-- Middle layer -->
+  <ellipse cx="80" cy="60" rx="35" ry="7" fill="#ac1a03"/>
+  <rect x="45" y="53" width="70" height="7" fill="#d32f2f"/>
+  
+  <!-- Top layer -->
+  <ellipse cx="80" cy="45" rx="30" ry="6" fill="#f2d16d"/>
+  <rect x="50" y="39" width="60" height="6" fill="#ffd700"/>
+  
+  <!-- Decorative frosting -->
+  <circle cx="80" cy="38" r="4" fill="#fff" opacity="0.8"/>
+  <circle cx="70" cy="40" r="3" fill="#fff" opacity="0.8"/>
+  <circle cx="90" cy="40" r="3" fill="#fff" opacity="0.8"/>
+  
+  <!-- Text -->
+  <text x="160" y="50" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#ac1a03">
+    Love In Layers
+  </text>
+  <text x="160" y="70" font-family="Arial, sans-serif" font-size="12" fill="#6e4315">
+    Baking Calculator
+  </text>
+</svg>
