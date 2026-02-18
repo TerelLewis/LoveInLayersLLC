@@ -53,7 +53,8 @@ header {
 }
 
 .logo {
-    max-width: 300px;
+    max-width: 100%;
+    width: 300px;
     height: auto;
     margin: 0 auto 15px;
     display: block;
