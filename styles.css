@@ -260,6 +260,11 @@ select:focus {
     text-align: center;
 }
 
+/* Make ingredients table text black for readability */
+#ingredientsTable td {
+    color: var(--text-primary);
+}
+
 .empty-state {
     text-align: center;
     color: var(--text-secondary);
@@ -384,6 +389,11 @@ select:focus {
 
 .cost-summary-section .summary-row strong {
     font-weight: bold;
+    color: var(--text-primary);
+}
+
+/* Make Cost Summary labels black for readability */
+.cost-summary-section .summary-row span {
     color: var(--text-primary);
 }
 
