@@ -149,7 +149,7 @@ select:focus {
 
 .btn-primary {
     background: var(--primary-color);
-    color: white;
+    color: var(--brand-dark-brown);
 }
 
 .btn-primary:hover {
@@ -168,7 +168,7 @@ select:focus {
 
 .btn-danger {
     background: var(--error-color);
-    color: white;
+    color: #ffffff;
     padding: 8px 12px;
     font-size: 0.85rem;
 }
@@ -382,6 +382,10 @@ select:focus {
     font-size: 1.1rem;
 }
 
+.cost-summary-section .summary-row strong {
+    font-weight: 700;
+}
+
 /* Profit section */
 .profit-grid {
     display: grid;
@@ -433,7 +437,7 @@ select:focus {
 
 .pricing-result.highlight span,
 .pricing-result.highlight strong {
-    color: white;
+    color: var(--brand-dark-brown);
 }
 
 .pricing-result.profit {
@@ -442,7 +446,7 @@ select:focus {
 
 .pricing-result.profit span,
 .pricing-result.profit strong {
-    color: white;
+    color: #ffffff;
 }
 
 /* Actions section */
