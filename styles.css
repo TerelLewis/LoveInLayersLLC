@@ -18,9 +18,13 @@
     --transition: all 0.3s ease;
     
     /* Brand colors */
+    /* Section font color */
     --brand-gold: #f2d16d;
+    /* Accent color */
     --brand-red: #ac1a03;
+    /* Background color */
     --brand-brown: #6e4315;
+    /* Dark background or secondary dark color */
     --brand-dark-brown: #441a02;
 }
 
