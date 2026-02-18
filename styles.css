@@ -262,7 +262,7 @@ select:focus {
 
 /* Make ingredients table text black for readability */
 #ingredientsTable td {
-    color: #1a1a1a;
+    color: var(--text-primary);
 }
 
 .empty-state {
@@ -394,7 +394,7 @@ select:focus {
 
 /* Make Cost Summary labels black for readability */
 .cost-summary-section .summary-row span {
-    color: #1a1a1a;
+    color: var(--text-primary);
 }
 
 /* Profit section */
