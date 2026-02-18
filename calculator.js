@@ -3,6 +3,13 @@
  * A tool for calculating ingredient quantities and pricing for various serving sizes
  */
 
+// Ingredient ID counter for unique IDs
+let ingredientIdCounter = 1;
+
+// Profit margin validation thresholds
+const MIN_RECOMMENDED_MARGIN = 10;
+const MAX_RECOMMENDED_MARGIN = 200;
+
 // State management
 const state = {
     ingredients: [],
@@ -59,6 +66,23 @@ function init() {
 }
 
 /**
+ * Generate a unique ingredient ID
+ */
+function generateIngredientId() {
+    return ingredientIdCounter++;
+}
+
+/**
+ * Initialize the ID counter based on existing ingredients
+ */
+function initializeIdCounter() {
+    if (state.ingredients.length > 0) {
+        const maxId = Math.max(...state.ingredients.map(ing => ing.id));
+        ingredientIdCounter = maxId + 1;
+    }
+}
+
+/**
  * Attach event listeners to DOM elements
  */
 function attachEventListeners() {
@@ -94,6 +118,24 @@ function attachEventListeners() {
     elements.clearAllBtn.addEventListener('click', handleClearAll);
     elements.loadSampleBtn.addEventListener('click', handleLoadSample);
     elements.exportBtn.addEventListener('click', handleExport);
+
+    // Event delegation for dynamically created ingredient elements
+    // Handle remove button clicks
+    elements.ingredientsList.addEventListener('click', (e) => {
+        if (e.target.classList.contains('btn-danger')) {
+            const id = parseInt(e.target.dataset.ingredientId);
+            handleRemoveIngredient(id);
+        }
+    });
+
+    // Handle editable input changes
+    elements.ingredientsList.addEventListener('change', (e) => {
+        if (e.target.classList.contains('editable-input')) {
+            const id = parseInt(e.target.dataset.ingredientId);
+            const field = e.target.dataset.field;
+            handleEditIngredient(id, field, e.target.value);
+        }
+    });
 }
 
 /**
@@ -136,7 +178,7 @@ function handleAddIngredient() {
     }
 
     const ingredient = {
-        id: Date.now(),
+        id: generateIngredientId(),
         name,
         amount,
         unit,
@@ -203,6 +245,16 @@ function handleLaborChange() {
 function handlePricingChange() {
     state.overheadCost = parseFloat(elements.overheadCost.value) || 0;
     state.profitMargin = parseFloat(elements.profitMargin.value) || 0;
+    
+    // Validate profit margin
+    if (state.profitMargin < 0) {
+        showNotification('Warning: Negative profit margin detected. You will lose money on each sale.', 'warning');
+    } else if (state.profitMargin < MIN_RECOMMENDED_MARGIN) {
+        showNotification('Warning: Very low profit margin. Consider increasing to ensure sustainability.', 'warning');
+    } else if (state.profitMargin > MAX_RECOMMENDED_MARGIN) {
+        showNotification('Warning: Very high profit margin. This may make your products difficult to sell.', 'warning');
+    }
+    
     updateUI();
     saveToLocalStorage();
 }
@@ -226,14 +278,14 @@ function handleClearAll() {
  */
 function handleLoadSample() {
     const sampleIngredients = [
-        { id: Date.now(), name: 'All-Purpose Flour', amount: 2.5, unit: 'cups', packageSize: 20, packageUnit: 'cups', packageCost: 4.99 },
-        { id: Date.now() + 1, name: 'Granulated Sugar', amount: 1.5, unit: 'cups', packageSize: 10, packageUnit: 'cups', packageCost: 3.49 },
-        { id: Date.now() + 2, name: 'Butter (unsalted)', amount: 1, unit: 'cups', packageSize: 2, packageUnit: 'cups', packageCost: 5.99 },
-        { id: Date.now() + 3, name: 'Eggs', amount: 3, unit: 'each', packageSize: 12, packageUnit: 'each', packageCost: 4.29 },
-        { id: Date.now() + 4, name: 'Vanilla Extract', amount: 2, unit: 'tsp', packageSize: 24, packageUnit: 'tsp', packageCost: 8.99 },
-        { id: Date.now() + 5, name: 'Baking Powder', amount: 2, unit: 'tsp', packageSize: 60, packageUnit: 'tsp', packageCost: 3.49 },
-        { id: Date.now() + 6, name: 'Milk', amount: 1, unit: 'cups', packageSize: 4, packageUnit: 'cups', packageCost: 2.49 },
-        { id: Date.now() + 7, name: 'Salt', amount: 0.5, unit: 'tsp', packageSize: 156, packageUnit: 'tsp', packageCost: 1.29 }
+        { id: generateIngredientId(), name: 'All-Purpose Flour', amount: 2.5, unit: 'cups', packageSize: 20, packageUnit: 'cups', packageCost: 4.99 },
+        { id: generateIngredientId(), name: 'Granulated Sugar', amount: 1.5, unit: 'cups', packageSize: 10, packageUnit: 'cups', packageCost: 3.49 },
+        { id: generateIngredientId(), name: 'Butter (unsalted)', amount: 1, unit: 'cups', packageSize: 2, packageUnit: 'cups', packageCost: 5.99 },
+        { id: generateIngredientId(), name: 'Eggs', amount: 3, unit: 'each', packageSize: 12, packageUnit: 'each', packageCost: 4.29 },
+        { id: generateIngredientId(), name: 'Vanilla Extract', amount: 2, unit: 'tsp', packageSize: 24, packageUnit: 'tsp', packageCost: 8.99 },
+        { id: generateIngredientId(), name: 'Baking Powder', amount: 2, unit: 'tsp', packageSize: 60, packageUnit: 'tsp', packageCost: 3.49 },
+        { id: generateIngredientId(), name: 'Milk', amount: 1, unit: 'cups', packageSize: 4, packageUnit: 'cups', packageCost: 2.49 },
+        { id: generateIngredientId(), name: 'Salt', amount: 0.5, unit: 'tsp', packageSize: 156, packageUnit: 'tsp', packageCost: 1.29 }
     ];
 
     state.ingredients = sampleIngredients;
@@ -409,7 +461,8 @@ function updateIngredientsTable() {
                            value="${ing.amount}" 
                            min="0" 
                            step="0.01"
-                           onchange="handleEditIngredient(${ing.id}, 'amount', this.value)"
+                           data-ingredient-id="${ing.id}"
+                           data-field="amount"
                            aria-label="Amount for ${escapeHtml(ing.name)}">
                 </td>
                 <td>${escapeHtml(ing.unit)}</td>
@@ -419,7 +472,8 @@ function updateIngredientsTable() {
                            value="${ing.packageSize}" 
                            min="0" 
                            step="0.01"
-                           onchange="handleEditIngredient(${ing.id}, 'packageSize', this.value)"
+                           data-ingredient-id="${ing.id}"
+                           data-field="packageSize"
                            aria-label="Package size for ${escapeHtml(ing.name)}">
                 </td>
                 <td>${escapeHtml(ing.packageUnit)}</td>
@@ -429,13 +483,14 @@ function updateIngredientsTable() {
                            value="${ing.packageCost.toFixed(2)}" 
                            min="0" 
                            step="0.01"
-                           onchange="handleEditIngredient(${ing.id}, 'packageCost', this.value)"
+                           data-ingredient-id="${ing.id}"
+                           data-field="packageCost"
                            aria-label="Package cost for ${escapeHtml(ing.name)}">
                 </td>
                 <td><strong>${scaledQty}</strong></td>
                 <td>$${totalCost}</td>
                 <td>
-                    <button class="btn btn-danger" onclick="handleRemoveIngredient(${ing.id})" aria-label="Remove ${escapeHtml(ing.name)}">
+                    <button class="btn btn-danger" data-ingredient-id="${ing.id}" aria-label="Remove ${escapeHtml(ing.name)}">
                         Remove
                     </button>
                 </td>
@@ -478,6 +533,38 @@ function escapeHtml(text) {
 }
 
 /**
+ * Show a notification message to the user
+ */
+function showNotification(message, type = 'warning') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    
+    // Set icon based on type
+    let icon = '⚠️';
+    if (type === 'success') icon = '✓';
+    if (type === 'error') icon = '✗';
+    
+    notification.innerHTML = `
+        <span class="notification-icon">${icon}</span>
+        <span class="notification-message">${message}</span>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+        notification.classList.add('hiding');
+        setTimeout(() => {
+            // Verify notification is still in the DOM before removing
+            if (notification.parentNode === document.body) {
+                document.body.removeChild(notification);
+            }
+        }, 300);
+    }, 5000);
+}
+
+/**
  * Save state to local storage
  */
 function saveToLocalStorage() {
@@ -485,6 +572,7 @@ function saveToLocalStorage() {
         localStorage.setItem('bakingCalculator', JSON.stringify(state));
     } catch (e) {
         console.warn('Unable to save to local storage:', e);
+        showNotification('Unable to save your data. Your changes may not be preserved when you close the browser.', 'error');
     }
 }
 
@@ -505,9 +593,13 @@ function loadFromLocalStorage() {
             elements.hourlyRate.value = state.hourlyRate;
             elements.overheadCost.value = state.overheadCost;
             elements.profitMargin.value = state.profitMargin;
+            
+            // Initialize ID counter based on loaded ingredients
+            initializeIdCounter();
         }
     } catch (e) {
         console.warn('Unable to load from local storage:', e);
+        showNotification('Unable to load your saved data. Starting with a fresh calculator.', 'warning');
     }
 }
 
