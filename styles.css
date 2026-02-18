@@ -16,6 +16,12 @@
     --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.15);
     --border-radius: 12px;
     --transition: all 0.3s ease;
+    
+    /* Brand colors */
+    --brand-gold: #f2d16d;
+    --brand-red: #ac1a03;
+    --brand-brown: #6e4315;
+    --brand-dark-brown: #441a02;
 }
 
 /* Reset and base styles */
